@@ -1,0 +1,37 @@
+{
+  "name": "cinema-store",
+  "version": "1.0.0",
+  "description": "CinemaStore é uma plataforma de e-commerce especializada na venda de filmes em versão digital. O projeto consiste em um sistema completo com autenticação de usuários, catálogo de produtos, carrinho de compras e um painel administrativo com CRUD completo para gerenciamento de filmes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WilianUno/cinema-store.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/WilianUno/cinema-store/issues"
+  },
+  "homepage": "https://github.com/WilianUno/cinema-store#readme",
+  "dependencies": {
+    "@prisma/client": "^7.0.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "prisma": "^7.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
