@@ -1,40 +1,40 @@
 {
-  "name": "cinema-store",
+  "name": "cinema-store-backend",
   "version": "1.0.0",
-  "description": "CinemaStore é uma plataforma de e-commerce especializada na venda de filmes em versão digital. O projeto consiste em um sistema completo com autenticação de usuários, catálogo de produtos, carrinho de compras e um painel administrativo com CRUD completo para gerenciamento de filmes.",
-  "main": "index.js",
+  "description": "Backend do CinemaStore - E-commerce de filmes digitais",
+  "main": "dist/server.js",
   "scripts": {
-    "dev": "ts-node src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "init-db": "ts-node scripts/initDb.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/WilianUno/cinema-store.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/WilianUno/cinema-store/issues"
-  },
-  "homepage": "https://github.com/WilianUno/cinema-store#readme",
+  "keywords": [
+    "ecommerce",
+    "cinema",
+    "typescript",
+    "express",
+    "sqlite"
+  ],
+  "author": "Seu Nome",
+  "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^7.0.0",
-    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.8.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.5",
-    "@types/node": "^24.10.1",
-    "prisma": "^7.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.10.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
   }
 }
