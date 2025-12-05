@@ -1,22 +1,15 @@
 import { Router } from 'express';
-import {
-    getAllMovies,
-    getMovieById,
-    createMovie,
-    updateMovie,
-    deleteMovie,
-    getGenres
-} from '../controllers/movieController';
+import { MovieController } from '../controllers/movieController';
 import { authMiddleware, adminMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
+const movieController = new MovieController();
 
-router.get('/', getAllMovies);          
-router.get('/genres', getGenres);       
-router.get('/:id', getMovieById);       
+router.get('/', movieController.index);
+router.get('/:id', movieController.show);
 
-router.post('/', authMiddleware, adminMiddleware, createMovie);
-router.put('/:id', authMiddleware, adminMiddleware, updateMovie);
-router.delete('/:id', authMiddleware, adminMiddleware, deleteMovie);
+router.post('/', authMiddleware, adminMiddleware, movieController.create);
+router.put('/:id', authMiddleware, adminMiddleware, movieController.update);
+router.delete('/:id', authMiddleware, adminMiddleware, movieController.delete);
 
 export default router;

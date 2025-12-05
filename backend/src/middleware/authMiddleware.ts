@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
+import { TokenPayload } from '../types/types'; // Importando o tipo centralizado
 
+// Estendendo o tipo Request para incluir o user tipado corretamente
 declare global {
     namespace Express {
         interface Request {
-            user?: {
-                id: number;
-                email: string;
-                role: string;
-            };
+            user?: TokenPayload; 
         }
     }
 }
@@ -26,10 +24,19 @@ export const authMiddleware = (
             return;
         }
 
-        const token = authHeader.split(' ')[1];
+        // Separa "Bearer <token>"
+        const parts = authHeader.split(' ');
+        
+        if (parts.length !== 2) {
+            res.status(401).json({ error: 'Erro no formato do token' });
+            return;
+        }
 
-        if (!token) {
-            res.status(401).json({ error: 'Token inválido' });
+        const [scheme, token] = parts;
+
+        // Verifica se começa com Bearer
+        if (!/^Bearer$/i.test(scheme)) {
+            res.status(401).json({ error: 'Token malformatado' });
             return;
         }
 
@@ -52,11 +59,13 @@ export const adminMiddleware = (
     res: Response, 
     next: NextFunction
 ): void => {
+    // Primeiro garante que o usuário está logado
     if (!req.user) {
         res.status(401).json({ error: 'Usuário não autenticado' });
         return;
     }
 
+    // Depois verifica se é admin
     if (req.user.role !== 'admin') {
         res.status(403).json({ error: 'Acesso negado. Apenas administradores.' });
         return;

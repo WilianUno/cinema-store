@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './config/database';
+import cartRoutes from './routes/cartRoutes';
+import checkoutRoutes from './routes/checkoutRoutes';
 
 import authRoutes from './routes/authRoutes';
 import movieRoutes from './routes/movieRoutes';
@@ -47,10 +49,13 @@ app.get('/api/test-db', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/checkout', checkoutRoutes);
 
 app.use('*', (req, res) => {
     res.status(404).json({ error: 'Rota não encontrada' });
 });
+
 
 
 app.listen(PORT, () => {

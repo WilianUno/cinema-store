@@ -2,134 +2,66 @@ import { Request, Response } from 'express';
 import db from '../config/database';
 import { hashPassword, comparePassword } from '../utils/hashPassword';
 import { generateToken } from '../utils/jwt';
-import { User } from '../types/types';
+import { User, UserResponse } from '../types/types';
 
-export const register = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { email, senha, nome } = req.body;
+export class AuthController {
 
-        // Validações
-        if (!email || !senha || !nome) {
-            res.status(400).json({ error: 'Email, senha e nome são obrigatórios' });
-            return;
+    // Login
+    async login(req: Request, res: Response) {
+        try {
+            const { email, senha } = req.body;
+            if (!email || !senha) return res.status(400).json({ error: 'Email e senha obrigatórios' });
+
+            const user = db.prepare('SELECT * FROM usuarios WHERE email = ?').get(email) as User;
+            if (!user) return res.status(401).json({ error: 'Credenciais inválidas' });
+
+            const isValid = await comparePassword(senha, user.senha || '');
+            if (!isValid) return res.status(401).json({ error: 'Credenciais inválidas' });
+
+            const token = generateToken({ id: user.id, email: user.email, role: user.role });
+
+            const userResponse: UserResponse = { id: user.id, email: user.email, nome: user.nome, role: user.role };
+            return res.json({ message: 'Login sucesso', token, user: userResponse });
+
+        } catch (error: any) {
+            return res.status(500).json({ error: 'Erro no login' });
         }
-
-        if (senha.length < 6) {
-            res.status(400).json({ error: 'Senha deve ter no mínimo 6 caracteres' });
-            return;
-        }
-
-        const existingUser = db.prepare('SELECT id FROM usuarios WHERE email = ?').get(email);
-
-        if (existingUser) {
-            res.status(400).json({ error: 'Email já cadastrado' });
-            return;
-        }
-
-        const hashedPassword = await hashPassword(senha);
-
-        const result = db.prepare(`
-            INSERT INTO usuarios (email, senha, nome, role)
-            VALUES (?, ?, ?, 'user')
-        `).run(email, hashedPassword, nome);
-
-        const newUser = db.prepare(`
-            SELECT id, email, nome, role, data_criacao 
-            FROM usuarios 
-            WHERE id = ?
-        `).get(result.lastInsertRowid) as User;
-
-        const token = generateToken({
-            id: newUser.id,
-            email: newUser.email,
-            role: newUser.role
-        });
-
-        res.status(201).json({
-            message: 'Usuário registrado com sucesso',
-            token,
-            user: {
-                id: newUser.id,
-                email: newUser.email,
-                nome: newUser.nome,
-                role: newUser.role
-            }
-        });
-    } catch (error) {
-        console.error('Erro ao registrar usuário:', error);
-        res.status(500).json({ error: 'Erro ao registrar usuário' });
     }
-};
 
-export const login = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { email, senha } = req.body;
+    // Registro
+    async register(req: Request, res: Response) {
+        try {
+            const { email, senha, nome } = req.body;
+            if (!email || !senha || !nome) return res.status(400).json({ error: 'Dados incompletos' });
 
-        if (!email || !senha) {
-            res.status(400).json({ error: 'Email e senha são obrigatórios' });
-            return;
+            const exists = db.prepare('SELECT id FROM usuarios WHERE email = ?').get(email);
+            if (exists) return res.status(400).json({ error: 'Email já existe' });
+
+            const hashed = await hashPassword(senha);
+            const result = db.prepare('INSERT INTO usuarios (email, senha, nome, role) VALUES (?, ?, ?, ?)')
+                             .run(email, hashed, nome, 'user');
+
+            const newUser: UserResponse = { id: Number(result.lastInsertRowid), email, nome, role: 'user' };
+            const token = generateToken({ id: newUser.id, email: newUser.email, role: newUser.role });
+
+            return res.status(201).json({ message: 'Criado com sucesso', token, user: newUser });
+
+        } catch (error: any) {
+            return res.status(500).json({ error: 'Erro ao registrar' });
         }
-
-        const user = db.prepare(`
-            SELECT * FROM usuarios WHERE email = ?
-        `).get(email) as User | undefined;
-
-        if (!user) {
-            res.status(401).json({ error: 'Email ou senha inválidos' });
-            return;
-        }
-
-        const isPasswordValid = await comparePassword(senha, user.senha);
-
-        if (!isPasswordValid) {
-            res.status(401).json({ error: 'Email ou senha inválidos' });
-            return;
-        }
-
-        const token = generateToken({
-            id: user.id,
-            email: user.email,
-            role: user.role
-        });
-
-        res.status(200).json({
-            message: 'Login realizado com sucesso',
-            token,
-            user: {
-                id: user.id,
-                email: user.email,
-                nome: user.nome,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        console.error('Erro ao fazer login:', error);
-        res.status(500).json({ error: 'Erro ao fazer login' });
     }
-};
 
+    // Perfil (A função que estava faltando)
+    async getProfile(req: Request, res: Response) {
+        try {
+            if (!req.user) return res.status(401).json({ error: 'Não autenticado' });
+            
+            const user = db.prepare('SELECT id, email, nome, role FROM usuarios WHERE id = ?').get(req.user.id);
+            if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
 
-export const getProfile = async (req: Request, res: Response): Promise<void> => {
-    try {
-        if (!req.user) {
-            res.status(401).json({ error: 'Usuário não autenticado' });
-            return;
+            return res.json(user);
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro ao buscar perfil' });
         }
-
-        const user = db.prepare(`
-            SELECT id, email, nome, role, data_criacao 
-            FROM usuarios 
-            WHERE id = ?
-        `).get(req.user.id) as User | undefined;
-
-        if (!user) {
-            res.status(404).json({ error: 'Usuário não encontrado' });
-            return;
-        }
-
-        res.status(200).json(user);
-    } catch (error) {
-        console.error('Erro ao buscar perfil:', error);
-        res.status(500).json({ error: 'Erro ao buscar perfil' });
     }
-};
+}

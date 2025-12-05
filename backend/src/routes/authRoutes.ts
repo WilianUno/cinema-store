@@ -1,14 +1,12 @@
 import { Router } from 'express';
-import { register, login, getProfile } from '../controllers/authController';
+import { AuthController } from '../controllers/authController';
 import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
+const authController = new AuthController(); 
 
-// Rotas públicas
-router.post('/register', register);
-router.post('/login', login);
-
-// Rotas protegidas
-router.get('/profile', authMiddleware, getProfile);
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.get('/profile', authMiddleware, authController.getProfile);
 
 export default router;

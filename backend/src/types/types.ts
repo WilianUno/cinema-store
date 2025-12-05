@@ -1,16 +1,22 @@
 export interface User {
     id: number;
     email: string;
-    senha: string;
+    senha?: string; // opcional pois às vezes buscamos sem senha
     nome: string;
     role: 'user' | 'admin';
-    data_criacao: string;
+    data_criacao?: string;
 }
 
 export interface UserResponse {
     id: number;
     email: string;
     nome: string;
+    role: 'user' | 'admin';
+}
+
+export interface TokenPayload {
+    id: number;
+    email: string;
     role: 'user' | 'admin';
 }
 
