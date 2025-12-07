@@ -1,51 +1,84 @@
-const hamburger = document.querySelector('.hamburger') as HTMLElement | null;
-const navMenu = document.querySelector('.nav-menu') as HTMLElement | null;
+function createElement<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  className?: string,
+  content?: string
+): HTMLElementTagNameMap[K] {
+  const el = document.createElement(tag) as HTMLElementTagNameMap[K];
+  if (className) el.className = className;
+  if (content) el.innerHTML = content;
+  return el;
+}
 
-hamburger?.addEventListener('click', () => {
-  if (navMenu) {
-    navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+function loadHeader() {
+  const container = document.getElementById("site-header");
+  if (!container) return;
+
+  const header = createElement("header", "navbar");
+  const navContainer = createElement("div", "navbar-container");
+
+  const logo = createElement("div", "logo");
+  logo.innerHTML = `<i class="fas fa-film"></i><span>CineCasa</span>`;
+
+  const navMenu = createElement("nav", "nav-menu");
+  navMenu.innerHTML = `
+    <a href="inicio.html#filmes" class="nav-link">Novidades</a>
+    <a href="inicio.html#breve" class="nav-link">Em breve</a>
+    <a href="catalogo.html" class="nav-link signup-btn">Catálogo</a>
+    <a href="carrinho.html" class="fa-solid fa-cart-shopping"></a>
+    <a href="login.html" class="nav-link login-btn">Entrar</a>
+  `;
+
+  const hamb = createElement("div", "hamburger");
+  hamb.innerHTML = "<span></span><span></span><span></span>";
+
+  navContainer.appendChild(logo);
+  navContainer.appendChild(navMenu);
+  navContainer.appendChild(hamb);
+
+  header.appendChild(navContainer);
+  container.appendChild(header);
+
+  initMenuEvents();
+}
+
+function initMenuEvents() {
+  const hamburger = document.querySelector<HTMLElement>(".hamburger");
+  const navMenu = document.querySelector<HTMLElement>(".nav-menu");
+
+  if (hamburger && navMenu) {
+    hamburger.addEventListener("click", () => {
+      navMenu.style.display = navMenu.style.display === "flex" ? "none" : "flex";
+    });
   }
-});
 
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', () => {
-    if (navMenu) navMenu.style.display = 'none';
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
+  navLinks.forEach((link) => {
+    if (!link) return;
+    link.addEventListener("click", () => {
+      if (navMenu) navMenu.style.display = "none";
+    });
   });
-});
+}
 
-document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', (e) => {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", loadHeader);
 
-    const href = anchor.getAttribute('href');
-    if (!href) return;
 
-    const target = document.querySelector(href) as HTMLElement | null;
-    if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  });
-});
-
-const newsletterForm = document.querySelector('.newsletter-form') as HTMLFormElement | null;
+const newsletterForm = document.querySelector<HTMLFormElement>('.newsletter-form');
 
 if (newsletterForm) {
   newsletterForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const emailInput = newsletterForm.querySelector('input[type="email"]') as HTMLInputElement | null;
+    const emailInput = newsletterForm.querySelector<HTMLInputElement>('input[type="email"]');
 
-    if (emailInput?.value) {
+    if (emailInput && emailInput.value) {
       alert(`Obrigado por se inscrever! Confirme o link enviado para ${emailInput.value}`);
       newsletterForm.reset();
     }
   });
 }
 
-const ctaButton = document.querySelector('.cta-button') as HTMLElement | null;
+const ctaButton = document.querySelector<HTMLElement>('.cta-button');
 
 if (ctaButton) {
   ctaButton.addEventListener('click', () => {
@@ -53,7 +86,8 @@ if (ctaButton) {
   });
 }
 
-document.querySelectorAll('.comprar-btn').forEach(btn => {
+document.querySelectorAll<HTMLButtonElement>('.comprar-btn').forEach(btn => {
+  if (!btn) return;
   btn.addEventListener('click', () => {
     const card = btn.closest('.filme-card') as HTMLElement | null;
     const filmeName = card?.querySelector('h3')?.textContent;
@@ -64,7 +98,8 @@ document.querySelectorAll('.comprar-btn').forEach(btn => {
   });
 });
 
-document.querySelectorAll('.play-btn').forEach(btn => {
+document.querySelectorAll<HTMLButtonElement>('.play-btn').forEach(btn => {
+  if (!btn) return;
   btn.addEventListener('click', () => {
     const filmeCard = btn.closest('.filme-card') as HTMLElement | null;
     const filmeName = filmeCard?.querySelector('h3')?.textContent;
@@ -90,10 +125,10 @@ const observer = new IntersectionObserver((entries, obs) => {
 }, observerOptions);
 
 document
-  .querySelectorAll('.filme-card, .promocao-card, .proximo-card')
+  .querySelectorAll<HTMLElement>('.filme-card, .promocao-card, .proximo-card')
   .forEach(card => {
-    (card as HTMLElement).style.opacity = '0';
-    observer.observe(card);
+    card.style.opacity = '0';
+    observer.observe(card as Element);
   });
 
 window.addEventListener('scroll', () => {

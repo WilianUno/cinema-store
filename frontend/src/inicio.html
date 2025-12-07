@@ -8,8 +8,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div id="site-header"></div>
   
-  <header class="navbar">
+  <!-- <header class="navbar">
     <div class="navbar-container">
       <div class="logo">
         <i class="fas fa-film"></i>
@@ -19,6 +20,7 @@
         <a href="#filmes" class="nav-link">Novidades</a>
         <a href="#breve" class="nav-link">Em breve</a>
         <a href="catalogo.html" class="nav-link signup-btn">Catálogo</a>
+        <a href="#carrinho" class="fa-solid fa-cart-shopping"></a>
         <a href="login.html" class="nav-link login-btn">Entrar</a>
       </nav>
       <div class="hamburger">
@@ -27,7 +29,7 @@
         <span></span>
       </div>
     </div>
-  </header>
+  </header> -->
 
   <section class="hero">
     <div class="hero-content">
@@ -145,7 +147,7 @@
       </div>
       <div class="proximo-card">
         <div class="data-lancamento">01 JAN</div>
-\        <h3>Drama Intenso</h3>
+        <h3>Drama Intenso</h3>
         <p>Drama</p>
       </div>
       <div class="proximo-card">
@@ -169,7 +171,7 @@
     <div class="footer-content">
       <div class="footer-section">
         <h4>CineCasa</h4>
-        <p>A melhor experiência de cinema da cidade</p>
+        <p>A melhor experiência de cinema no conforto da sua</p>
       </div>
       <div class="footer-section">
         <h4>Informações</h4>
@@ -199,6 +201,29 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="Script.js"></script>
+  <script>
+    // Diagnóstico: verifica se o header foi injetado após o script
+    setTimeout(() => {
+      const sh = document.getElementById('site-header');
+      console.log('DEBUG: site-header element ->', sh);
+      if (!sh) {
+        console.error('DEBUG: #site-header não encontrado no DOM');
+        return;
+      }
+      if (sh.children.length === 0) {
+        console.warn('DEBUG: header não foi injetado — exibindo aviso visível');
+        const warn = document.createElement('div');
+        warn.textContent = 'Header não injetado — ver console para detalhes';
+        warn.style.background = '#ffcc00';
+        warn.style.color = '#000';
+        warn.style.padding = '8px';
+        warn.style.textAlign = 'center';
+        sh.appendChild(warn);
+      } else {
+        console.log('DEBUG: header injetado com filhos:', sh.children);
+      }
+    }, 150);
+  </script>
 </body>
 </html>

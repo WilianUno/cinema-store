@@ -65,6 +65,7 @@ body {
 }
 
 .nav-menu {
+  color: var(--text-light);
   display: flex;
   gap: 2rem;
   align-items: center;

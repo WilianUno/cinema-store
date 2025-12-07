@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineCasa - Compre seu filme preferido aqui</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body> 
+  <div id="site-header"></div>
+ <section id="filmes" class="filmes-container">
+    <h2 class="section-title">Filmes disponíveis</h2>
+    <div class="filmes-grid">
+      <div class="filme-card">
+        <div class="filme-poster">
+          <div class="overlay">
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+          </div>
+        </div>
+        <div class="filme-info">
+          <h3>Aventura no Espaço</h3>
+          <p class="genero">Ficção Científica • 2h 30m</p>
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span class="nota">4.8/5</span>
+          </div>
+          <button class="comprar-btn">Comprar Ingresso</button>
+        </div>
+      </div>
+
+      <div class="filme-card">
+        <div class="filme-poster">
+          <div class="overlay">
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+          </div>
+        </div>
+        <div class="filme-info">
+          <h3>Romance em Paris</h3>
+          <p class="genero">Romance • Drama • 1h 55m</p>
+          <div class="rating">
+            <span class="stars">★★★★☆</span>
+            <span class="nota">4.5/5</span>
+          </div>
+          <button class="comprar-btn">Comprar Ingresso</button>
+        </div>
+      </div>
+
+      <div class="filme-card">
+        <div class="filme-poster">
+          <div class="overlay">
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+          </div>
+        </div>
+        <div class="filme-info">
+          <h3>Ação Explosiva</h3>
+          <p class="genero">Ação • Thriller • 2h 15m</p>
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span class="nota">4.9/5</span>
+          </div>
+          <button class="comprar-btn">Comprar Ingresso</button>
+        </div>
+      </div>
+
+      <div class="filme-card">
+        <div class="filme-poster">
+          <div class="overlay">
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+          </div>
+        </div>
+        <div class="filme-info">
+          <h3>Comédia Hilária</h3>
+          <p class="genero">Comédia • 1h 50m</p>
+          <div class="rating">
+            <span class="stars">★★★★☆</span>
+            <span class="nota">4.3/5</span>
+          </div>
+          <button class="comprar-btn">Comprar Ingresso</button>
+        </div>
+      </div>
+
+      <div class="filme-card">
+        <div class="filme-poster">
+          <div class="overlay">
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+          </div>
+        </div>
+        <div class="filme-info">
+          <h3>Comédia Hilária</h3>
+          <p class="genero">Comédia • 1h 50m</p>
+          <div class="rating">
+            <span class="stars">★★★★☆</span>
+            <span class="nota">4.3/5</span>
+          </div>
+          <button class="comprar-btn">Comprar Ingresso</button>
+        </div>
+      </div>
+        
+      <div class="filme-card">
+        <div class="filme-poster">
+          <div class="overlay">
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+          </div>
+        </div>
+        <div class="filme-info">
+          <h3>Comédia Hilária</h3>
+          <p class="genero">Comédia • 1h 50m</p>
+          <div class="rating">
+            <span class="stars">★★★★☆</span>
+            <span class="nota">4.3/5</span>
+          </div>
+          <button class="comprar-btn">Comprar Ingresso</button>
+        </div>
+      </div>
+
+      
+    </div>
+  </section>
+  <script src="Script.js"></script>
+  <script>
+    // Diagnóstico: verifica se o header foi injetado após o script
+    setTimeout(() => {
+      const sh = document.getElementById('site-header');
+      console.log('DEBUG: site-header element ->', sh);
+      if (!sh) {
+        console.error('DEBUG: #site-header não encontrado no DOM');
+        return;
+      }
+      if (sh.children.length === 0) {
+        console.warn('DEBUG: header não foi injetado — exibindo aviso visível');
+        const warn = document.createElement('div');
+        warn.textContent = 'Header não injetado — ver console para detalhes';
+        warn.style.background = '#ffcc00';
+        warn.style.color = '#000';
+        warn.style.padding = '8px';
+        warn.style.textAlign = 'center';
+        sh.appendChild(warn);
+      } else {
+        console.log('DEBUG: header injetado com filhos:', sh.children);
+      }
+    }, 150);
+  </script>
+</body>
+</html>
