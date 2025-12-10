@@ -131,10 +131,10 @@
       }
     }
 
-    // Event listener para formulário
     const checkoutForm = document.getElementById('checkout-form');
-    checkoutForm.addEventListener('submit', async (e) => {
+    checkoutForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      e.stopPropagation();
 
       const paymentData = {
         cardName: document.getElementById('cardName').value,
@@ -144,24 +144,24 @@
         email: document.getElementById('email').value
       };
 
-      try {
-        // Processar checkout
-        const response = await API.Checkout.process(paymentData);
-        
-        API.Utils.showToast('Pagamento realizado com sucesso!', 'success');
-        
-        // Limpar carrinho
-        await API.Cart.clear();
-        
-        // Redirecionar para página de sucesso
-        setTimeout(() => {
-          window.location.href = '/catalogo.html';
-        }, 2000);
-
-      } catch (error) {
-        console.error('Erro no pagamento:', error);
-        API.Utils.showToast('Erro ao processar pagamento. Tente novamente.', 'error');
-      }
+      API.Checkout.process(paymentData)
+        .then(response => {
+          console.log('Pagamento sucesso:', response);
+          API.Utils.showToast('Pagamento realizado com sucesso!', 'success');
+          
+          return API.Cart.clear();
+        })
+        .then(() => {
+          setTimeout(() => {
+            window.location.href = '/catalogo';
+          }, 2000);
+        })
+        .catch(error => {
+          console.error('Erro no pagamento:', error);
+          API.Utils.showToast('Erro ao processar pagamento. Tente novamente.', 'error');
+        });
+      
+      return false;
     });
 
     // Carregar dados ao inicializar

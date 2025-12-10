@@ -92,13 +92,7 @@ app.use('/api/checkout', checkoutRoutes);
 // SERVIR PÁGINAS HTML
 // ===========================
 
-// Rota raiz - redirecionar para início
 app.get('/', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'inicio.html'));
-});
-
-// Rotas específicas das páginas
-app.get('/inicio', (req, res) => {
     res.sendFile(path.join(frontendPath, 'inicio.html'));
 });
 
@@ -120,6 +114,10 @@ app.get('/register', (req, res) => {
 
 app.get('/checkout', (req, res) => {
     res.sendFile(path.join(frontendPath, 'checkout.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'admin.html'));
 });
 
 // ===========================
@@ -186,7 +184,7 @@ app.listen(PORT, () => {
     console.log('   - Test DB: http://localhost:' + PORT + '/api/test-db');
     console.log('');
     console.log('🎯 Páginas:');
-    console.log('   - Início: http://localhost:' + PORT + '/inicio');
+    console.log('   - Início: http://localhost:' + PORT);
     console.log('   - Catálogo: http://localhost:' + PORT + '/catalogo');
     console.log('   - Carrinho: http://localhost:' + PORT + '/carrinho');
     console.log('   - Login: http://localhost:' + PORT + '/login');

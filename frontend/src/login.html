@@ -43,41 +43,46 @@
 
       <div class="auth-footer">
         <p>Não tem conta? <a href="/register.html">Crie uma aqui</a></p>
-        <p><a href="/inicio.html">Voltar ao início</a></p>
+        <p><a href="/">Voltar ao início</a></p>
       </div>
     </div>
   </section>
 
   <script src="api.js"></script>
-  <script src="Script.js"></script>
   <script>
-    const loginForm = document.getElementById('login-form');
-    
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('login-form');
       
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      if (!loginForm) return;
       
-      try {
-        const response = await API.Auth.login(email, password);
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         
-        // Armazenar token e dados do usuário
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('usuarioLogado', response.user.nome);
-        localStorage.setItem('userId', response.user.id);
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         
-        API.Utils.showToast('Login realizado com sucesso!', 'success');
+        API.Auth.login(email, password)
+          .then(response => {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('usuarioLogado', response.user.nome);
+            localStorage.setItem('userId', response.user.id);
+            localStorage.setItem('userRole', response.user.role);
+            
+            API.Utils.showToast('Login realizado com sucesso!', 'success');
+            
+            const redirectUrl = response.user.role === 'admin' ? '/admin' : '/catalogo';
+            setTimeout(() => {
+              window.location.href = redirectUrl;
+            }, 1500);
+          })
+          .catch(error => {
+            console.error('Erro no login:', error);
+            API.Utils.showToast('Erro ao fazer login. Verifique suas credenciais.', 'error');
+          });
         
-        // Redirecionar para catálogo
-        setTimeout(() => {
-          window.location.href = '/catalogo.html';
-        }, 1500);
-        
-      } catch (error) {
-        console.error('Erro no login:', error);
-        API.Utils.showToast('Erro ao fazer login. Verifique suas credenciais.', 'error');
-      }
+        return false;
+      });
     });
   </script>
 </body>

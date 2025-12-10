@@ -15,7 +15,7 @@ function loadHeader() {
   const logo = createElement("div", "logo");
   logo.innerHTML = `<i class="fas fa-film"></i><span>CineCasa</span>`;
   logo.style.cursor = 'pointer';
-  logo.addEventListener('click', () => window.location.href = '/inicio.html');
+  logo.addEventListener('click', () => window.location.href = '/');
 
   const navMenu = createElement("nav", "nav-menu");
   
@@ -23,9 +23,9 @@ function loadHeader() {
   const userName = localStorage.getItem('usuarioLogado');
 
   navMenu.innerHTML = `
-    <a href="inicio.html#filmes" class="nav-link">Novidades</a>
-    <a href="inicio.html#breve" class="nav-link">Em breve</a>
-    <a href="catalogo.html" class="nav-link signup-btn">Catálogo</a>
+    <a href="/#filmes" class="nav-link">Novidades</a>
+    <a href="/#breve" class="nav-link">Em breve</a>
+    <a href="/catalogo.html" class="nav-link signup-btn">Catálogo</a>
     <a href="carrinho.html" class="nav-link cart-link">
       <i class="fa-solid fa-cart-shopping"></i>
       <span class="cart-badge">0</span>
@@ -71,13 +71,13 @@ function initMenuEvents() {
 
   if (hamburger && navMenu) {
     hamburger.addEventListener("click", () => {
-      navMenu.style.display = navMenu.style.display === "flex" ? "none" : "flex";
+      navMenu.classList.toggle("active");
     });
   }
 
   document.querySelectorAll(".nav-link").forEach((link) => {
     link.addEventListener("click", () => {
-      if (navMenu) navMenu.style.display = "none";
+      if (navMenu) navMenu.classList.remove("active");
     });
   });
 }
@@ -235,7 +235,7 @@ if (newsletterForm) {
 const ctaButton = document.querySelector('.cta-button');
 if (ctaButton) {
   ctaButton.addEventListener('click', () => {
-    window.location.href = '/catalogo.html';
+    window.location.href = '/catalogo';
   });
 }
 
@@ -279,8 +279,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const filmesContainer = document.querySelector('.filmes-grid');
   if (filmesContainer) {
-    const isHomePage = window.location.pathname.includes('inicio.html') || window.location.pathname === '/';
-    const isCatalogPage = window.location.pathname.includes('catalogo.html');
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+    const isCatalogPage = window.location.pathname === '/catalogo' || window.location.pathname.includes('catalogo.html');
 
     if (isHomePage) {
       await loadMovies('.filmes-grid', 'featured');
