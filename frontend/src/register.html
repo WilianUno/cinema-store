@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - CineCasa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <section class="auth-container">
+    <div class="auth-box">
+      <h1>Criar Conta na CineCasa</h1>
+      <p class="subtitle">Junte-se a nós e comece a desfrutar</p>
+
+      <form id="register-form" class="auth-form">
+        <div class="form-group">
+          <label for="nome">Nome Completo</label>
+          <input 
+            type="text" 
+            id="nome" 
+            name="nome" 
+            placeholder="Seu nome" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="seu@email.com" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Mínimo 6 caracteres" 
+            required
+            minlength="6"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirmar Senha</label>
+          <input 
+            type="password" 
+            id="confirm-password" 
+            name="confirm-password" 
+            placeholder="Confirme sua senha" 
+            required
+            minlength="6"
+          >
+        </div>
+
+        <button type="submit" class="cta-button">Criar Conta</button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Já tem conta? <a href="/login.html">Faça login aqui</a></p>
+        <p><a href="/inicio.html">Voltar ao início</a></p>
+      </div>
+    </div>
+  </section>
+
+  <script src="api.js"></script>
+  <script src="Script.js"></script>
+  <script>
+    const registerForm = document.getElementById('register-form');
+    
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      
+      if (password !== confirmPassword) {
+        API.Utils.showToast('As senhas não correspondem', 'error');
+        return;
+      }
+      
+      try {
+        const response = await API.Auth.register({
+          nome,
+          email,
+          password
+        });
+        
+        // Armazenar token e dados do usuário
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('usuarioLogado', response.user.nome);
+        localStorage.setItem('userId', response.user.id);
+        
+        API.Utils.showToast('Conta criada com sucesso!', 'success');
+        
+        // Redirecionar para catálogo
+        setTimeout(() => {
+          window.location.href = '/catalogo.html';
+        }, 1500);
+        
+      } catch (error) {
+        console.error('Erro no registro:', error);
+        API.Utils.showToast('Erro ao criar conta. Tente novamente.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

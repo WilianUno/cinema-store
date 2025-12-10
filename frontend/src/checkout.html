@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - CineCasa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <section class="checkout-container">
+    <div class="checkout-content">
+      <h1>Finalizar Compra</h1>
+      
+      <div class="checkout-layout">
+        <div class="order-summary">
+          <h2>Resumo do Pedido</h2>
+          <div id="order-items" class="order-items">
+            <!-- Items serão carregados aqui -->
+          </div>
+          
+          <div class="order-totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span id="subtotal">R$ 0,00</span>
+            </div>
+            <div class="total-row">
+              <span>Taxa:</span>
+              <span id="tax">R$ 0,00</span>
+            </div>
+            <div class="total-row grand-total">
+              <span>Total:</span>
+              <span id="total">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkout-form">
+          <h2>Informações de Pagamento</h2>
+          <form id="checkout-form">
+            <div class="form-group">
+              <label for="cardName">Nome no Cartão</label>
+              <input type="text" id="cardName" required>
+            </div>
+
+            <div class="form-group">
+              <label for="cardNumber">Número do Cartão</label>
+              <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="expiryDate">Data de Vencimento</label>
+                <input type="text" id="expiryDate" placeholder="MM/AA" required>
+              </div>
+
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="000" required maxlength="3">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email de Confirmação</label>
+              <input type="email" id="email" required>
+            </div>
+
+            <button type="submit" class="checkout-btn">
+              <i class="fas fa-lock"></i> Processar Pagamento
+            </button>
+          </form>
+
+          <div class="security-info">
+            <i class="fas fa-shield-alt"></i>
+            <p>Sua transação é segura e protegida. Utilizamos criptografia SSL.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="api.js"></script>
+  <script src="Script.js"></script>
+  <script>
+    // Verificar autenticação
+    if (!API.Auth.isAuthenticated()) {
+      window.location.href = '/login.html';
+    }
+
+    // Carregar carrinho e exibir resumo
+    async function loadOrderSummary() {
+      try {
+        const cart = await API.Cart.get();
+        const orderItemsDiv = document.getElementById('order-items');
+        
+        if (!cart.items || cart.items.length === 0) {
+          orderItemsDiv.innerHTML = '<p class="no-items">Carrinho vazio</p>';
+          return;
+        }
+
+        let subtotal = 0;
+        const itemsHTML = cart.items.map(item => {
+          const itemTotal = item.movie.price * item.quantity;
+          subtotal += itemTotal;
+          return `
+            <div class="order-item">
+              <div class="item-info">
+                <h4>${item.movie.title}</h4>
+                <p>${item.quantity}x ${API.Utils.formatPrice(item.movie.price)}</p>
+              </div>
+              <span class="item-total">${API.Utils.formatPrice(itemTotal)}</span>
+            </div>
+          `;
+        }).join('');
+
+        orderItemsDiv.innerHTML = itemsHTML;
+
+        // Calcular taxas (exemplo: 10%)
+        const tax = subtotal * 0.1;
+        const total = subtotal + tax;
+
+        document.getElementById('subtotal').textContent = API.Utils.formatPrice(subtotal);
+        document.getElementById('tax').textContent = API.Utils.formatPrice(tax);
+        document.getElementById('total').textContent = API.Utils.formatPrice(total);
+
+      } catch (error) {
+        console.error('Erro ao carregar carrinho:', error);
+        API.Utils.showToast('Erro ao carregar pedido', 'error');
+      }
+    }
+
+    // Event listener para formulário
+    const checkoutForm = document.getElementById('checkout-form');
+    checkoutForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const paymentData = {
+        cardName: document.getElementById('cardName').value,
+        cardNumber: document.getElementById('cardNumber').value,
+        expiryDate: document.getElementById('expiryDate').value,
+        cvv: document.getElementById('cvv').value,
+        email: document.getElementById('email').value
+      };
+
+      try {
+        // Processar checkout
+        const response = await API.Checkout.process(paymentData);
+        
+        API.Utils.showToast('Pagamento realizado com sucesso!', 'success');
+        
+        // Limpar carrinho
+        await API.Cart.clear();
+        
+        // Redirecionar para página de sucesso
+        setTimeout(() => {
+          window.location.href = '/catalogo.html';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Erro no pagamento:', error);
+        API.Utils.showToast('Erro ao processar pagamento. Tente novamente.', 'error');
+      }
+    });
+
+    // Carregar dados ao inicializar
+    loadOrderSummary();
+  </script>
+</body>
+</html>
