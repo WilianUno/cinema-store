@@ -7,8 +7,14 @@ const cartController = new CartController();
 
 router.use(authMiddleware);
 
-router.post('/', cartController.addToCart); // Adicionar
+// Rotas específicas PRIMEIRO
+router.delete('/clear', cartController.clear); // Limpar carrinho
+router.post('/add', cartController.addToCart); // Alias para adicionar
+router.put('/update', cartController.update); // Atualizar quantidade
+
+// Rotas genéricas DEPOIS
 router.get('/', cartController.getCart);    // Ver carrinho
-router.delete('/:id', cartController.remove); // Remover item (pelo ID do item do carrinho)
+router.post('/', cartController.addToCart); // Adicionar item
+router.delete('/:id', cartController.remove); // Remover item específico
 
 export default router;
