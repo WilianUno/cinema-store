@@ -62,4 +62,64 @@ export class MovieController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    // Filmes em destaque (primeiros 6)
+    featured(req: Request, res: Response) {
+        try {
+            const movies = db.prepare('SELECT * FROM filmes LIMIT 6').all();
+            return res.json(movies);
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    // Próximos lançamentos (últimos 3)
+    upcoming(req: Request, res: Response) {
+        try {
+            const movies = db.prepare('SELECT * FROM filmes ORDER BY ano DESC LIMIT 3').all();
+            return res.json(movies);
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    // Buscar filmes por título ou gênero
+    search(req: Request, res: Response) {
+        try {
+            const q = req.query.q as string;
+            if (!q || q.trim().length < 3) {
+                return res.status(400).json({ error: 'Digite pelo menos 3 caracteres' });
+            }
+
+            const searchTerm = `%${q}%`;
+            const movies = db.prepare(`
+                SELECT * FROM filmes 
+                WHERE titulo LIKE ? OR genero LIKE ? OR descricao LIKE ?
+                LIMIT 20
+            `).all(searchTerm, searchTerm, searchTerm);
+            
+            return res.json(movies);
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    // Filtrar por gênero
+    byCategory(req: Request, res: Response) {
+        try {
+            const category = req.params.category as string;
+            if (!category) {
+                return res.status(400).json({ error: 'Categoria obrigatória' });
+            }
+
+            const movies = db.prepare(`
+                SELECT * FROM filmes 
+                WHERE genero LIKE ?
+            `).all(`%${category}%`);
+            
+            return res.json(movies);
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
