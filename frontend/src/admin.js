@@ -73,7 +73,6 @@ async function loadFilmes() {
       </tr>
     `).join('');
   } catch (error) {
-    console.error('Erro ao carregar filmes:', error);
     API.Utils.showToast('Erro ao carregar filmes', 'error');
   }
 }
@@ -108,7 +107,6 @@ async function loadUsuarios() {
       </tr>
     `).join('');
   } catch (error) {
-    console.error('Erro ao carregar usuários:', error);
     document.getElementById('usuarios-list').innerHTML = '<tr><td colspan="6">Erro ao carregar usuários</td></tr>';
   }
 }
@@ -121,30 +119,35 @@ async function loadVendas() {
       }
     }).then(r => r.json());
 
-    if (vendas.stats) {
-      document.getElementById('total-vendas').textContent = API.Utils.formatPrice(vendas.stats.total);
-      document.getElementById('total-pedidos').textContent = vendas.stats.pedidos;
-      document.getElementById('total-clientes').textContent = vendas.stats.clientes;
+    const stats = await fetch('http://localhost:3000/api/vendas/stats', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(r => r.json());
+
+    if (stats) {
+      document.getElementById('total-vendas').textContent = API.Utils.formatPrice(stats.total);
+      document.getElementById('total-pedidos').textContent = stats.pedidos;
+      document.getElementById('total-clientes').textContent = stats.clientes;
     }
 
     const tbody = document.getElementById('vendas-list');
     
-    if (!vendas.vendas || vendas.vendas.length === 0) {
+    if (!vendas || vendas.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5">Nenhuma venda registrada</td></tr>';
       return;
     }
 
-    tbody.innerHTML = vendas.vendas.map(venda => `
+    tbody.innerHTML = vendas.map(venda => `
       <tr>
         <td>${venda.id}</td>
-        <td>${venda.usuario_nome}</td>
+        <td>${venda.usuario_nome || 'Desconhecido'}</td>
         <td>${API.Utils.formatPrice(venda.total)}</td>
         <td>${API.Utils.formatDate(venda.data_compra)}</td>
         <td>${venda.status}</td>
       </tr>
     `).join('');
   } catch (error) {
-    console.error('Erro ao carregar vendas:', error);
     document.getElementById('vendas-list').innerHTML = '<tr><td colspan="5">Erro ao carregar vendas</td></tr>';
   }
 }
@@ -175,7 +178,6 @@ formFilme.addEventListener('submit', async (e) => {
     modal.style.display = 'none';
     loadFilmes();
   } catch (error) {
-    console.error('Erro ao adicionar filme:', error);
     API.Utils.showToast('Erro ao adicionar filme', 'error');
   }
 });
@@ -191,7 +193,6 @@ function deleteFilme(id) {
       API.Utils.showToast('Filme removido com sucesso!', 'success');
       loadFilmes();
     }).catch(error => {
-      console.error('Erro ao deletar filme:', error);
       API.Utils.showToast('Erro ao deletar filme', 'error');
     });
   }
@@ -208,7 +209,6 @@ function deleteUsuario(id) {
       API.Utils.showToast('Usuário removido com sucesso!', 'success');
       loadUsuarios();
     }).catch(error => {
-      console.error('Erro ao deletar usuário:', error);
       API.Utils.showToast('Erro ao deletar usuário', 'error');
     });
   }

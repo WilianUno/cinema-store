@@ -102,13 +102,13 @@
 
         let subtotal = 0;
         const itemsHTML = cart.items.map(item => {
-          const itemTotal = item.movie.price * item.quantity;
+          const itemTotal = item.preco * item.quantidade;
           subtotal += itemTotal;
           return `
             <div class="order-item">
               <div class="item-info">
-                <h4>${item.movie.title}</h4>
-                <p>${item.quantity}x ${API.Utils.formatPrice(item.movie.price)}</p>
+                <h4>${item.titulo}</h4>
+                <p>${item.quantidade}x ${API.Utils.formatPrice(item.preco)}</p>
               </div>
               <span class="item-total">${API.Utils.formatPrice(itemTotal)}</span>
             </div>
@@ -126,7 +126,6 @@
         document.getElementById('total').textContent = API.Utils.formatPrice(total);
 
       } catch (error) {
-        console.error('Erro ao carregar carrinho:', error);
         API.Utils.showToast('Erro ao carregar pedido', 'error');
       }
     }
@@ -146,7 +145,6 @@
 
       API.Checkout.process(paymentData)
         .then(response => {
-          console.log('Pagamento sucesso:', response);
           API.Utils.showToast('Pagamento realizado com sucesso!', 'success');
           
           return API.Cart.clear();
@@ -157,7 +155,6 @@
           }, 2000);
         })
         .catch(error => {
-          console.error('Erro no pagamento:', error);
           API.Utils.showToast('Erro ao processar pagamento. Tente novamente.', 'error');
         });
       

@@ -30,7 +30,6 @@ async function loadCart() {
     updateCartTotals(cart.items);
 
   } catch (error) {
-    console.error('Erro ao carregar carrinho:', error);
     API.Utils.showToast('Erro ao carregar carrinho', 'error');
   }
 }
@@ -39,24 +38,24 @@ function renderCartItems(items) {
   const tbody = document.getElementById('itens-carrinho');
   
   tbody.innerHTML = items.map(item => `
-    <tr data-item-id="${item.id}">
+    <tr data-item-id="${item.item_id}">
       <td>
         <div class="filme-info">
-          <img src="${item.movie.poster || 'https://via.placeholder.com/50x75?text=Sem+Imagem'}" alt="${item.movie.title}">
-          <span>${item.movie.title}</span>
+          <img src="${item.capa_url || 'https://via.placeholder.com/50x75?text=Sem+Imagem'}" alt="${item.titulo}">
+          <span>${item.titulo}</span>
         </div>
       </td>
-      <td>${API.Utils.formatPrice(item.movie.price)}</td>
+      <td>${API.Utils.formatPrice(item.preco)}</td>
       <td>
         <div class="quantidade">
-          <button class="btn-menos" data-item-id="${item.id}">−</button>
-          <span class="qty">${item.quantity}</span>
-          <button class="btn-mais" data-item-id="${item.id}">+</button>
+          <button class="btn-menos" data-item-id="${item.item_id}">−</button>
+          <span class="qty">${item.quantidade}</span>
+          <button class="btn-mais" data-item-id="${item.item_id}">+</button>
         </div>
       </td>
-      <td>${API.Utils.formatPrice(item.movie.price * item.quantity)}</td>
+      <td>${API.Utils.formatPrice(item.preco * item.quantidade)}</td>
       <td>
-        <button class="remover" data-item-id="${item.id}" title="Remover item">
+        <button class="remover" data-item-id="${item.item_id}" title="Remover item">
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -70,7 +69,7 @@ function updateCartTotals(items) {
   let subtotal = 0;
   
   items.forEach(item => {
-    subtotal += item.movie.price * item.quantity;
+    subtotal += item.preco * item.quantidade;
   });
 
   const taxa = subtotal * 0.1;
@@ -121,7 +120,6 @@ async function updateItemQuantity(itemId, quantity) {
     await loadCart();
     updateCartCount();
   } catch (error) {
-    console.error('Erro ao atualizar quantidade:', error);
     API.Utils.showToast('Erro ao atualizar quantidade', 'error');
   }
 }
@@ -133,7 +131,6 @@ async function removeItem(itemId) {
     await loadCart();
     updateCartCount();
   } catch (error) {
-    console.error('Erro ao remover item:', error);
     API.Utils.showToast('Erro ao remover item', 'error');
   }
 }
@@ -146,7 +143,5 @@ async function updateCartCount() {
       badge.textContent = count;
       badge.style.display = count > 0 ? 'flex' : 'none';
     }
-  } catch (error) {
-    console.error('Erro ao atualizar contador:', error);
-  }
+  } catch (error) {}
 }

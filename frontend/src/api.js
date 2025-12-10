@@ -95,7 +95,7 @@ const CartAPI = {
   add: async (movieId, quantity = 1) => {
     return fetchAPI('/cart/add', {
       method: 'POST',
-      body: JSON.stringify({ movieId, quantity }),
+      body: JSON.stringify({ filme_id: movieId, quantidade: quantity }),
     });
   },
   

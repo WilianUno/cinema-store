@@ -273,14 +273,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadHeader();
 
   const usuarioLogado = localStorage.getItem('usuarioLogado');
-  if (usuarioLogado) {
-    console.log(`🎬 Bem-vindo de volta, ${usuarioLogado}!`);
-  }
 
   const filmesContainer = document.querySelector('.filmes-grid');
   if (filmesContainer) {
-    const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
-    const isCatalogPage = window.location.pathname === '/catalogo' || window.location.pathname.includes('catalogo.html');
+    const currentPath = window.location.pathname;
+    const isHomePage = currentPath === '/' || currentPath === '';
+    const isCatalogPage = currentPath === '/catalogo' || currentPath.includes('catalogo.html') || currentPath === '/catalogo.html';
 
     if (isHomePage) {
       await loadMovies('.filmes-grid', 'featured');
