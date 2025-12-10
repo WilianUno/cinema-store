@@ -8,6 +8,8 @@ import cartRoutes from './routes/cartRoutes';
 import checkoutRoutes from './routes/checkoutRoutes';
 import authRoutes from './routes/authRoutes';
 import movieRoutes from './routes/movieRoutes';
+import userRoutes from './routes/userRoutes';
+import salesRoutes from './routes/salesRoutes';
 
 dotenv.config();
 
@@ -87,6 +89,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/checkout', checkoutRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/vendas', salesRoutes);
 
 // ===========================
 // SERVIR PÁGINAS HTML
