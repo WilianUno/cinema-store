@@ -9,13 +9,13 @@ export class AuthController {
     // Login
     async login(req: Request, res: Response) {
         try {
-            const { email, senha } = req.body;
-            if (!email || !senha) return res.status(400).json({ error: 'Email e senha obrigatórios' });
+            const { email, password } = req.body;
+            if (!email || !password) return res.status(400).json({ error: 'Email e senha obrigatórios' });
 
             const user = db.prepare('SELECT * FROM usuarios WHERE email = ?').get(email) as User;
             if (!user) return res.status(401).json({ error: 'Credenciais inválidas' });
 
-            const isValid = await comparePassword(senha, user.senha || '');
+            const isValid = await comparePassword(password, user.senha || '');
             if (!isValid) return res.status(401).json({ error: 'Credenciais inválidas' });
 
             const token = generateToken({ id: user.id, email: user.email, role: user.role });
@@ -31,13 +31,13 @@ export class AuthController {
     // Registro
     async register(req: Request, res: Response) {
         try {
-            const { email, senha, nome } = req.body;
-            if (!email || !senha || !nome) return res.status(400).json({ error: 'Dados incompletos' });
+            const { email, password, nome } = req.body;
+            if (!email || !password || !nome) return res.status(400).json({ error: 'Dados incompletos' });
 
             const exists = db.prepare('SELECT id FROM usuarios WHERE email = ?').get(email);
             if (exists) return res.status(400).json({ error: 'Email já existe' });
 
-            const hashed = await hashPassword(senha);
+            const hashed = await hashPassword(password);
             const result = db.prepare('INSERT INTO usuarios (email, senha, nome, role) VALUES (?, ?, ?, ?)')
                              .run(email, hashed, nome, 'user');
 
