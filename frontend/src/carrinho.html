@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras - Cinema Store</title>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Carrinho de Compras</h1>
+        
+        <div id="carrinho-vazio" class="carrinho-vazio">
+            <p>Seu carrinho está vazio. <a href="inicio.html" style="color: #e50914;">Continue comprando</a></p>
+        </div>
+        
+        <div id="conteudo-carrinho">
+            <table class="tabela-carrinho">
+                <thead>
+                    <tr>
+                        <th>Filme</th>
+                        <th>Preço Unitário</th>
+                        <th>Quantidade</th>
+                        <th>Subtotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="itens-carrinho">
+                    <tr>
+                        <td>
+                            <div class="filme-info">
+                                <img src="https://via.placeholder.com/50x75" alt="Filme">
+                                <span>Filme Exemplo 1</span>
+                            </div>
+                        </td>
+                        <td>R$ 29,90</td>
+                        <td>
+                            <div class="quantidade">
+                                <button>-</button>
+                                <span>1</span>
+                                <button>+</button>
+                            </div>
+                        </td>
+                        <td>R$ 29,90</td>
+                        <td><button class="remover">Remover</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="resumo">
+                <div class="resumo-item">
+                    <span>Subtotal:</span>
+                    <span>R$ 29,90</span>
+                </div>
+                <div class="resumo-item">
+                    <span>Frete:</span>
+                    <span>Grátis</span>
+                </div>
+                <div class="resumo-total">
+                    <span>Total:</span>
+                    <span>R$ 29,90</span>
+                </div>
+                
+                <div class="botoes">
+                    <a href="catalogo.html">
+                    <button class="continuar-comprando">Continuar Comprando</button>
+                    </a>
+                    <button class="finalizar-compra">Finalizar Compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            text-align: center;
+            color: #e50914;
+        }
+        
+        .carrinho-vazio {
+            text-align: center;
+            padding: 40px;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .tabela-carrinho {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .tabela-carrinho thead {
+            background-color: #e50914;
+        }
+        
+        .tabela-carrinho th {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .tabela-carrinho td {
+            padding: 15px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .tabela-carrinho tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .filme-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filme-info img {
+            width: 50px;
+            height: 75px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        
+        .quantidade {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .quantidade button {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .quantidade button:hover {
+            background-color: #c40812;
+        }
+        
+        .remover {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .remover:hover {
+            background-color: #555;
+        }
+        
+        .resumo {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+        }
+        
+        .resumo-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .resumo-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e50914;
+            border-top: 1px solid #444;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .botoes {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .botoes button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .continuar-comprando {
+            background-color: #444;
+            color: white;
+        }
+        
+        .continuar-comprando:hover {
+            background-color: #555;
+        }
+        
+        .finalizar-compra {
+            background-color: #e50914;
+            color: white;
+        }
+        
+        .finalizar-compra:hover {
+            background-color: #c40812;
+        }
+    </style>
+</html>
