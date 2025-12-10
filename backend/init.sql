@@ -1,3 +1,6 @@
+-- Habilitar suporte a foreign keys
+PRAGMA foreign_keys = ON;
+
 -- Limpar tabelas existentes
 DROP TABLE IF EXISTS itens_compra;
 DROP TABLE IF EXISTS compras;
