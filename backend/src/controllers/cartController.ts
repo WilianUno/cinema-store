@@ -93,4 +93,51 @@ export class CartController {
             return res.status(500).json({ error: 'Erro ao remover item' });
         }
     }
+
+    // ATUALIZAR QUANTIDADE DE ITEM
+    update(req: Request, res: Response) {
+        try {
+            const userId = req.user?.id;
+            const { itemId, quantity } = req.body;
+
+            if (!userId) return res.status(401).json({ error: 'Usuário não autenticado' });
+            if (!itemId || quantity === undefined) {
+                return res.status(400).json({ error: 'itemId e quantity obrigatórios' });
+            }
+
+            if (quantity < 1) {
+                // Se quantidade é menor que 1, remove o item
+                db.prepare('DELETE FROM carrinho WHERE id = ? AND usuario_id = ?')
+                    .run(itemId, userId);
+                return res.json({ message: 'Item removido do carrinho' });
+            }
+
+            // Atualiza a quantidade
+            const result = db.prepare('UPDATE carrinho SET quantidade = ? WHERE id = ? AND usuario_id = ?')
+                .run(quantity, itemId, userId);
+
+            if (result.changes === 0) {
+                return res.status(404).json({ error: 'Item não encontrado' });
+            }
+
+            return res.json({ message: 'Quantidade atualizada' });
+
+        } catch (error: any) {
+            return res.status(500).json({ error: 'Erro ao atualizar carrinho' });
+        }
+    }
+
+    // LIMPAR CARRINHO
+    clear(req: Request, res: Response) {
+        try {
+            const userId = req.user?.id;
+            if (!userId) return res.status(401).json({ error: 'Usuário não autenticado' });
+
+            db.prepare('DELETE FROM carrinho WHERE usuario_id = ?').run(userId);
+            return res.json({ message: 'Carrinho limpo com sucesso' });
+
+        } catch (error: any) {
+            return res.status(500).json({ error: 'Erro ao limpar carrinho' });
+        }
+    }
 }
